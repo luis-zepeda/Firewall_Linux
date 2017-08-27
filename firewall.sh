@@ -9,7 +9,7 @@ while [ true ]; do
 			echo "1)F*** that sh**  2)yea yea Its mine  3)Add to whitelist"
 			read opcion
 				case $opcion in
-					1) sudo eject /dev/sdc1;;
+					1) sudo eject /dev/sdb1;;
 					2) echo "Be careful of you decisions nigga";;
 					3) echo $USBSERIAL >> whitelist.txt
 						echo "$USBSERIAL Added to whitelist";;
@@ -23,7 +23,7 @@ while [ true ]; do
 			case $opcion in
 				1) echo "Be wise dont trust USB's";;
 				2) echo "USB deleted from white list and ejected"
-					sudo eject /dev/sdc1
+					sudo eject /dev/sdb1
 					sed -i '/[$USBSERIAL]/d' whitelist.txt;;
 				3) echo "WTF is that";;
 			esac
