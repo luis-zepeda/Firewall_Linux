@@ -3,7 +3,7 @@
 while [ true ]; do
 	cat /etc/mtab | grep media 
 	if [ $? -eq 0 ]; then
-		USBSERIAL=$(dmesg | tail -n20 | grep ": Serial" | awk '{print $6}' )
+		USBSERIAL=$(dmesg | tail -n20 | grep ": Serial" | awk '{print $5}' )
 		if [ $(grep -c $USBSERIAL whitelist.txt) -eq 0 ];then
 			echo "USB with serialnumber:m$USBSERIAL detected select a choice"
 			echo "1)F*** that sh**  2)yea yea Its mine  3)Add to whitelist"
