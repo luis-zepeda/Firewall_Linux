@@ -5,30 +5,33 @@ while [ true ]; do
 	if [ $? -eq 0 ]; then
 		USBSERIAL=$(dmesg | tail -n20 | grep ": Serial" | awk '{print $5}' )
 		if [ $(grep -c $USBSERIAL whitelist.txt) -eq 0 ];then
-			echo "USB with serialnumber:m$USBSERIAL detected select a choice"
-			echo "1)F*** that sh**  2)yea yea Its mine  3)Add to whitelist"
-			read opcion
-				case $opcion in
-					1) sudo eject /dev/sdb1;;
-					2) echo "Be careful of you decisions nigga";;
-					3) echo $USBSERIAL >> whitelist.txt
-						echo "$USBSERIAL Added to whitelist";;
-					*) echo "WTF is that";;
-				esac
-			break;
-		else
-			echo "USB : $USBSERIAL detected"
-			echo " 1)yea yea yea It's my USB 2)F*** that sh**"
-			read opcion 
-			case $opcion in
-				1) echo "Be wise dont trust USB's";;
-				2) echo "USB deleted from white list and ejected"
+			CHOICE=$(zenity --list --height=220 --title='New USB detected' --text='Do you want to: ' --column "Choice" "F*** that sh**" "Give access once" "Add to white list" "Add to black list")
+			case $CHOICE in
+				"F*** that sh**")
 					sudo eject /dev/sdb1
-					sed -i '/[$USBSERIAL]/d' whitelist.txt;;
-				3) echo "WTF is that";;
-			esac
-			sudo dmesg --clear
-			break;
+				;;
+				"Give access once"
+					sudo dmesg --clear
+				;;
+				"Add to white list"
+					echo $USBSERIAL>>whitelist.txt
+					sudo dmseg --clear
+				;;
+				"Add to black list"
+					echo $USBSERIAL>>blacklist.txt
+				;;
+			esac	
+		else
+			zenity --question --text 'It is yours' --title 'New USB detected' --ok-label='YEA it is mine'\
+			--cancel-label='F*** that'
+			if [ $? -eq 0 ]; then
+				zenity --warning --text="Be wise don't trust USB's"
+				sudo dmesg --clear
+			else
+				zenity --warning --text="USB deleted from white list and ejected"
+					sudo eject /dev/sdb1
+					sed -i '/[$USBSERIAL]/d' whitelist.txt
+			fi
 		fi
 	fi
 done
